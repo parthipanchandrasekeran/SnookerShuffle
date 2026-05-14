@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Snooker Shuffle</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="topbar" aria-label="App header">
+        <div>
+          <p class="eyebrow">Table-ready digital draw</p>
+          <h1>Snooker Shuffle</h1>
+        </div>
+        <button class="icon-button" id="resetGame" type="button">Reset</button>
+      </section>
+
+      <section class="layout">
+        <aside class="panel setup-panel">
+          <div class="panel-head">
+            <h2>Game</h2>
+            <p id="modeText">Single-device mode</p>
+          </div>
+
+          <div class="mode-tabs" role="tablist" aria-label="Game mode">
+            <button class="mode-tab is-active" id="localMode" type="button">Local</button>
+            <button class="mode-tab" id="roomMode" type="button">Room</button>
+          </div>
+
+          <div class="room-tools hidden" id="roomTools">
+            <label for="roomName">Your name</label>
+            <input id="roomName" type="text" maxlength="18" placeholder="e.g. Sam" autocomplete="off">
+            <div class="button-grid">
+              <button id="createRoom" type="button">Create room</button>
+              <button class="secondary-action" id="joinRoom" type="button">Join room</button>
+            </div>
+            <label for="roomCodeInput">Room code</label>
+            <input id="roomCodeInput" type="text" maxlength="6" placeholder="ABCD" autocomplete="off">
+            <div class="room-code hidden" id="roomCodeBox">
+              <span>Room code</span>
+              <strong id="roomCodeText">----</strong>
+            </div>
+          </div>
+
+          <form class="add-player" id="playerForm">
+            <label for="playerName">Player name</label>
+            <div class="input-row">
+              <input id="playerName" name="playerName" type="text" maxlength="18" placeholder="e.g. Mina" autocomplete="off">
+              <button type="submit">Add</button>
+            </div>
+          </form>
+
+          <div class="player-list" id="playerList" aria-live="polite"></div>
+
+          <div class="rule-box">
+            <span class="rule-label">Reds needed</span>
+            <strong id="redRequirement">Add players</strong>
+            <p>Players confirm reds at the table. No red counter.</p>
+          </div>
+
+          <div class="rule-controls">
+            <label class="check-row">
+              <input id="autoReds" type="checkbox" checked>
+              <span>Auto reds by player count</span>
+            </label>
+            <label for="manualReds">Manual reds</label>
+            <input id="manualReds" type="number" min="1" max="5" value="2">
+          </div>
+
+          <div class="action-stack">
+            <button class="secondary-action" id="samplePlayers" type="button">Load sample players</button>
+            <button class="primary-action" id="drawOrder" type="button" disabled>Draw start order</button>
+          </div>
+        </aside>
+
+        <section class="panel table-panel">
+          <div class="table-status">
+            <div>
+              <p class="eyebrow" id="phaseLabel">Phase 1-5 build</p>
+              <h2 id="gameTitle">Set up the game</h2>
+            </div>
+            <span class="status-pill" id="statusPill">Waiting</span>
+          </div>
+
+          <div class="snooker-table" aria-label="Snooker table pocket guide">
+            <span class="pocket corner top-left"></span>
+            <span class="pocket corner top-right"></span>
+            <span class="pocket corner bottom-left"></span>
+            <span class="pocket corner bottom-right"></span>
+            <span class="pocket middle top-mid"></span>
+            <span class="pocket middle bottom-mid"></span>
+            <div class="baulk-line"></div>
+            <div class="spot black"></div>
+            <div class="spot pink"></div>
+            <div class="spot blue"></div>
+            <div class="spot brown"></div>
+            <div class="spot green"></div>
+            <div class="spot yellow"></div>
+            <div class="red-pack">
+              <span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+
+          <div class="host-tools hidden" id="hostTools">
+            <div>
+              <h3>Host controls</h3>
+              <p>Mark colors potted to handle dead balls. Secrets stay hidden until a claim is checked.</p>
+            </div>
+            <div class="color-control-grid" id="colorControls"></div>
+          </div>
+
+          <div class="winner-banner hidden" id="winnerBanner"></div>
+          <div class="game-grid" id="gameGrid"></div>
+          <div class="event-log" id="eventLog"></div>
+        </section>
+      </section>
+    </main>
+
+    <div class="privacy-overlay hidden" id="privacyOverlay" role="dialog" aria-modal="true" aria-labelledby="privacyTitle">
+      <div class="privacy-card">
+        <div class="privacy-screen" id="privacyScreen">
+          <p class="eyebrow">Private draw</p>
+          <h2 id="privacyTitle">Hand the device to the player</h2>
+          <p>Only this player should tap reveal. Other players should look away.</p>
+          <button class="primary-action" id="revealTarget" type="button">Reveal target</button>
+        </div>
+
+        <div class="target-screen hidden" id="targetScreen">
+          <p class="eyebrow" id="targetPlayer">Player</p>
+          <div class="target-ball" id="targetBall"></div>
+          <h2 id="targetText">Target color</h2>
+          <p class="target-copy" id="targetPocketText">Pot it in the assigned corner pocket.</p>
+          <div class="mini-table" aria-label="Assigned winning pocket map">
+            <span class="mini-pocket top-left" data-pocket-marker="top-left"></span>
+            <span class="mini-pocket top-right" data-pocket-marker="top-right"></span>
+            <span class="mini-pocket bottom-left" data-pocket-marker="bottom-left"></span>
+            <span class="mini-pocket bottom-right" data-pocket-marker="bottom-right"></span>
+            <span class="mini-label mini-label-top-left">Top left</span>
+            <span class="mini-label mini-label-top-right">Top right</span>
+            <span class="mini-label mini-label-bottom-left">Bottom left</span>
+            <span class="mini-label mini-label-bottom-right">Bottom right</span>
+          </div>
+          <div class="claim-tools">
+            <button class="secondary-action" id="claimWin" type="button">Claim win</button>
+            <button class="danger-action" id="hideTarget" type="button">Hide before passing</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
