@@ -228,10 +228,8 @@ function actionForPlayer(player, ownSecret) {
   if (mode === "room" && !state.isHost && !isOwnRoomPlayer) {
     return `<span class="drawn-note">${player.hasTarget ? "Target hidden" : "Waiting"}</span>`;
   }
-  if (player.status === "dead") {
-    return canDrawForPlayer
-      ? `<button class="qualify-button" data-redraw="${player.id}" type="button">Redraw after extra red</button>`
-      : `<span class="drawn-note">Dead ball</span>`;
+  if (player.status === "out") {
+    return `<span class="drawn-note">Out</span>`;
   }
   if (ownSecret) {
     return `<button class="qualify-button" data-show-target="${player.id}" type="button">Show my target</button>`;
@@ -342,7 +340,7 @@ function drawLocalOrder() {
   state.log.push("Start order drawn.");
 }
 
-function localDrawTarget(playerId, redraw = false) {
+function localDrawTarget(playerId) {
   const player = state.players.find((item) => item.id === playerId);
   if (!player || state.targetPool.length === 0) return;
   const drawnColor = shuffle(state.targetPool)[0];
@@ -352,7 +350,7 @@ function localDrawTarget(playerId, redraw = false) {
   player.targetPocket = drawnPocket;
   player.hasTarget = true;
   player.status = "target-drawn";
-  state.log.push(`${player.name} ${redraw ? "redrew" : "drew"} a private target.`);
+  state.log.push(`${player.name} drew a private target.`);
 }
 
 function showTarget(playerId) {
@@ -373,14 +371,14 @@ function revealKnownTarget(player) {
   dom.targetScreen.classList.remove("hidden");
 }
 
-async function openPrivateDraw(playerId, redraw = false) {
+async function openPrivateDraw(playerId) {
   activePlayerId = playerId;
   clearPocketHighlights();
   if (mode === "local") {
-    localDrawTarget(playerId, redraw);
+    localDrawTarget(playerId);
     render();
   } else {
-    await runRemoteAction(redraw ? "redrawDeadBall" : "drawTarget", { playerId });
+    await runRemoteAction("drawTarget", { playerId });
   }
   dom.privacyOverlay.classList.remove("hidden");
   dom.privacyScreen.classList.remove("hidden");
@@ -399,7 +397,7 @@ async function markColorPotted(colorName) {
   }
   if (!state.pottedColors.includes(colorName)) state.pottedColors.push(colorName);
   state.players.forEach((player) => {
-    if (player.targetColor?.name === colorName && player.status !== "winner") player.status = "dead";
+    if (player.targetColor?.name === colorName && player.status !== "winner") player.status = "out";
   });
   state.log.push(`${colorName} marked potted.`);
   render();
@@ -467,7 +465,7 @@ function formatStatus(status) {
     setup: "Setup",
     "needs-reds": "Needs reds",
     "target-drawn": "Target hidden",
-    dead: "Dead ball",
+    out: "Out",
     winner: "Winner"
   }[status] || "Ready";
 }
@@ -551,10 +549,8 @@ dom.playerList.addEventListener("click", async (event) => {
 });
 dom.gameGrid.addEventListener("click", (event) => {
   const drawId = event.target.dataset.privateDraw;
-  const redrawId = event.target.dataset.redraw;
   const showId = event.target.dataset.showTarget;
   if (drawId) openPrivateDraw(drawId).catch(showError);
-  if (redrawId) openPrivateDraw(redrawId, true).catch(showError);
   if (showId) showTarget(showId);
 });
 dom.colorControls.addEventListener("click", (event) => {

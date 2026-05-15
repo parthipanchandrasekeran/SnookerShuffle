@@ -163,26 +163,10 @@ async function runAction(room, action, body) {
     if (!room.pottedColors.includes(color.name)) room.pottedColors.push(color.name);
     room.players.forEach((player) => {
       if (player.targetColor?.name === color.name && player.status !== "winner") {
-        player.status = "dead";
+        player.status = "out";
       }
     });
     log(room, `${color.name} marked potted.`);
-    return { room, extra: {} };
-  }
-
-  if (action === "redrawDeadBall") {
-    assertPlaying(room);
-    const player = findPlayerByToken(room, body.playerToken) || findPlayer(room, body.playerId);
-    if (!player) throw new Error("Player not found.");
-    if (player.status !== "dead") throw new Error("Only dead-ball players can redraw.");
-    if (room.targetPool.length === 0) throw new Error("No target colors left.");
-    const drawnColor = shuffle(room.targetPool)[0];
-    const drawnPocket = shuffle(pocketsForColor(drawnColor))[0];
-    room.targetPool = room.targetPool.filter((color) => color.name !== drawnColor.name);
-    player.targetColor = drawnColor;
-    player.targetPocket = drawnPocket;
-    player.status = "target-drawn";
-    log(room, `${player.name} redrew after a dead ball.`);
     return { room, extra: {} };
   }
 

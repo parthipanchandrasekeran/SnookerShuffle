@@ -112,11 +112,11 @@ When a player claims the win, the app should reveal their target color and assig
 
 A dead ball happens when a player's secret target color has already been potted by someone else.
 
-Suggested default rule:
+Default rule:
 
-- The player marks their color as dead.
-- They must pot one more red.
-- Then they draw another available color.
+- The player who secretly picked that color is out.
+- They do not get another attempt.
+- They do not draw another color.
 
 If no target colors are available, the app should decide the winner using the end-game rule.
 
@@ -124,7 +124,7 @@ If no target colors are available, the app should decide the winner using the en
 
 After qualifying, a player may pot colors that are not their own to stop other players from winning.
 
-This can make another player's secret color become dead.
+This can knock another player out if it was their secret color.
 
 ## End Of Game
 
@@ -144,5 +144,5 @@ The game ends when:
 7. The app gives that player one random secret target color.
 8. The app privately shows that player the exact pocket where their target color must be potted, with a table map.
 9. The color and pocket guide then disappear so other players cannot see it.
-10. Track used target colors, dead balls, fouls, and re-draws only where needed.
+10. Track used target colors, potted colors, knocked-out players, and fouls only where needed.
 11. Confirm win only if the player's target color is potted in the assigned pocket.
