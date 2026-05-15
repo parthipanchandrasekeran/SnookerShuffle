@@ -368,57 +368,83 @@ button:disabled {
   position: relative;
   height: clamp(220px, 34vw, 360px);
   overflow: hidden;
-  border: 16px solid var(--rail);
-  border-radius: 28px;
+  border: 18px solid #5a3520;
+  border-radius: 30px;
   background:
-    radial-gradient(circle at 66% 50%, rgba(255, 255, 255, 0.08), transparent 19%),
-    linear-gradient(135deg, #14744f, var(--felt));
-  box-shadow: inset 0 0 0 5px #7b4d2f, inset 0 0 40px rgba(0, 0, 0, 0.22);
+    radial-gradient(circle at 66% 50%, rgba(255, 255, 255, 0.12), transparent 20%),
+    radial-gradient(circle at 22% 52%, rgba(0, 0, 0, 0.14), transparent 30%),
+    repeating-linear-gradient(102deg, rgba(255, 255, 255, 0.022) 0 1px, transparent 1px 7px),
+    repeating-linear-gradient(18deg, rgba(0, 0, 0, 0.022) 0 1px, transparent 1px 9px),
+    linear-gradient(135deg, #1a8059 0%, #106445 48%, #0c5138 100%);
+  background-clip: padding-box;
+  box-shadow:
+    inset 0 0 0 5px #7e5230,
+    inset 0 0 0 13px rgba(27, 83, 58, 0.9),
+    inset 0 0 48px rgba(0, 0, 0, 0.32),
+    0 15px 30px rgba(24, 33, 29, 0.16);
+}
+
+.snooker-table::before {
+  content: none;
+}
+
+.snooker-table::after {
+  content: "";
+  position: absolute;
+  inset: 9px;
+  z-index: 1;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 16px;
+  pointer-events: none;
 }
 
 .pocket {
   position: absolute;
-  z-index: 3;
-  width: 34px;
-  height: 34px;
+  z-index: 4;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
-  background: #0a130f;
-  box-shadow: inset 0 0 0 5px rgba(255, 255, 255, 0.04);
+  background:
+    radial-gradient(circle at 42% 42%, #020403 0 30%, #0a130f 31% 58%, #020403 59% 100%);
+  box-shadow:
+    inset 0 0 0 5px rgba(255, 255, 255, 0.05),
+    0 0 0 7px rgba(65, 35, 22, 0.78),
+    0 3px 10px rgba(0, 0, 0, 0.28);
 }
 
 .corner.top-left {
-  top: -17px;
-  left: -17px;
+  top: -24px;
+  left: -24px;
 }
 
 .corner.top-right {
-  top: -17px;
-  right: -17px;
+  top: -24px;
+  right: -24px;
 }
 
 .corner.bottom-left {
-  bottom: -17px;
-  left: -17px;
+  bottom: -24px;
+  left: -24px;
 }
 
 .corner.bottom-right {
-  right: -17px;
-  bottom: -17px;
+  right: -24px;
+  bottom: -24px;
 }
 
 .middle {
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   left: 50%;
   transform: translateX(-50%);
 }
 
 .top-mid {
-  top: -15px;
+  top: -26px;
 }
 
 .bottom-mid {
-  bottom: -15px;
+  bottom: -26px;
 }
 
 .baulk-line {
@@ -427,30 +453,36 @@ button:disabled {
   bottom: 0;
   left: 24%;
   width: 2px;
-  background: rgba(255, 255, 255, 0.35);
+  z-index: 2;
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.42) 10% 90%, transparent);
 }
 
 .spot,
 .red-pack span,
 .target-ball {
   border-radius: 50%;
-  box-shadow: inset -5px -7px 10px rgba(0, 0, 0, 0.28), inset 4px 5px 8px rgba(255, 255, 255, 0.34);
+  box-shadow:
+    inset -6px -8px 11px rgba(0, 0, 0, 0.36),
+    inset 4px 5px 9px rgba(255, 255, 255, 0.38),
+    0 7px 9px rgba(0, 0, 0, 0.2);
 }
 
 .spot {
   position: absolute;
-  width: 24px;
-  height: 24px;
+  z-index: 3;
+  width: 26px;
+  height: 26px;
+  transform: translate(-50%, -50%);
 }
 
 .spot.black {
-  right: 13%;
+  left: 87%;
   top: 50%;
   background: #080808;
 }
 
 .spot.pink {
-  right: 32%;
+  left: 68%;
   top: 50%;
   background: #eb6fa8;
 }
@@ -481,18 +513,23 @@ button:disabled {
 
 .red-pack {
   position: absolute;
-  right: 22%;
+  z-index: 3;
+  right: 21%;
   top: 50%;
-  display: grid;
-  grid-template-columns: repeat(5, 16px);
-  gap: 4px;
+  width: 88px;
+  height: 82px;
   transform: translateY(-50%);
 }
 
 .red-pack span {
-  width: 16px;
-  height: 16px;
-  background: #c92231;
+  position: absolute;
+  left: calc(var(--c) * 17px);
+  top: calc(var(--r) * 15px);
+  width: 17px;
+  height: 17px;
+  background:
+    radial-gradient(circle at 33% 27%, rgba(255, 255, 255, 0.34), transparent 0 24%),
+    #c92231;
 }
 
 .game-grid {
