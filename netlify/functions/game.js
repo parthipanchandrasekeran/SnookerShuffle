@@ -10,10 +10,12 @@ const colors = [
 ];
 
 const pockets = [
-  { id: "top-left", label: "Top left" },
-  { id: "top-right", label: "Top right" },
-  { id: "bottom-left", label: "Bottom left" },
-  { id: "bottom-right", label: "Bottom right" }
+  { id: "top-left", label: "Top left", group: "corner" },
+  { id: "top-right", label: "Top right", group: "corner" },
+  { id: "bottom-left", label: "Bottom left", group: "corner" },
+  { id: "bottom-right", label: "Bottom right", group: "corner" },
+  { id: "top-middle", label: "Top middle", group: "middle" },
+  { id: "bottom-middle", label: "Bottom middle", group: "middle" }
 ];
 
 const store = getStore("snooker-shuffle-rooms");
@@ -144,7 +146,7 @@ async function runAction(room, action, body) {
     if (player.targetColor) throw new Error("This player already has a target.");
     if (room.targetPool.length === 0) throw new Error("No target colors left.");
     const drawnColor = shuffle(room.targetPool)[0];
-    const drawnPocket = shuffle(pockets)[0];
+    const drawnPocket = shuffle(pocketsForColor(drawnColor))[0];
     room.targetPool = room.targetPool.filter((color) => color.name !== drawnColor.name);
     player.targetColor = drawnColor;
     player.targetPocket = drawnPocket;
@@ -175,7 +177,7 @@ async function runAction(room, action, body) {
     if (player.status !== "dead") throw new Error("Only dead-ball players can redraw.");
     if (room.targetPool.length === 0) throw new Error("No target colors left.");
     const drawnColor = shuffle(room.targetPool)[0];
-    const drawnPocket = shuffle(pockets)[0];
+    const drawnPocket = shuffle(pocketsForColor(drawnColor))[0];
     room.targetPool = room.targetPool.filter((color) => color.name !== drawnColor.name);
     player.targetColor = drawnColor;
     player.targetPocket = drawnPocket;
@@ -342,6 +344,11 @@ function shuffle(list) {
     [output[index], output[swapIndex]] = [output[swapIndex], output[index]];
   }
   return output;
+}
+
+function pocketsForColor(color) {
+  const group = color.name === "Blue" ? "middle" : "corner";
+  return pockets.filter((pocket) => pocket.group === group);
 }
 
 function token(length = 16) {

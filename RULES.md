@@ -86,7 +86,8 @@ After a player has drawn a target color, the app should guide them clearly:
 - Show the target color.
 - Show the exact pocket where the target color must be potted.
 - Show a table map with that pocket highlighted.
-- By default, the target color must be potted in the assigned corner pocket.
+- By default, non-blue colors must be potted in the assigned corner pocket.
+- Blue must be potted in one of the two assigned middle pockets.
 
 Possible winning pockets:
 
@@ -94,14 +95,16 @@ Possible winning pockets:
 - Top-right corner
 - Bottom-left corner
 - Bottom-right corner
+- Top-middle pocket for blue
+- Bottom-middle pocket for blue
 
-Middle pockets should not count as a winning pot unless house rules allow it.
+Middle pockets only count as a winning pot for blue unless house rules allow otherwise.
 
 ## Winning
 
 A qualified player wins when they pot their own secret target color into their assigned winning pocket.
 
-Default winning pockets: one assigned corner pocket.
+Default winning pockets: one assigned corner pocket, except blue uses one assigned middle pocket.
 
 When a player claims the win, the app should reveal their target color and assigned pocket, then confirm whether the potted color and pocket were valid.
 

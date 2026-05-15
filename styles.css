@@ -731,6 +731,12 @@ button:disabled {
   right: -15px;
 }
 
+.mini-pocket.top-middle {
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 .mini-pocket.bottom-left {
   bottom: -15px;
   left: -15px;
@@ -739,6 +745,12 @@ button:disabled {
 .mini-pocket.bottom-right {
   right: -15px;
   bottom: -15px;
+}
+
+.mini-pocket.bottom-middle {
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .mini-label {
@@ -759,6 +771,12 @@ button:disabled {
   right: 18px;
 }
 
+.mini-label-top-middle {
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 .mini-label-bottom-left {
   bottom: 16px;
   left: 18px;
@@ -767,6 +785,12 @@ button:disabled {
 .mini-label-bottom-right {
   right: 18px;
   bottom: 16px;
+}
+
+.mini-label-bottom-middle {
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 @media (max-width: 860px) {

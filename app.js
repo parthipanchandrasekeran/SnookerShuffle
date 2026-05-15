@@ -8,10 +8,12 @@ const colors = [
 ];
 
 const pockets = [
-  { id: "top-left", label: "Top left" },
-  { id: "top-right", label: "Top right" },
-  { id: "bottom-left", label: "Bottom left" },
-  { id: "bottom-right", label: "Bottom right" }
+  { id: "top-left", label: "Top left", group: "corner" },
+  { id: "top-right", label: "Top right", group: "corner" },
+  { id: "bottom-left", label: "Bottom left", group: "corner" },
+  { id: "bottom-right", label: "Bottom right", group: "corner" },
+  { id: "top-middle", label: "Top middle", group: "middle" },
+  { id: "bottom-middle", label: "Bottom middle", group: "middle" }
 ];
 
 const sampleNames = ["Ali", "Sam", "Raj", "Mina"];
@@ -344,7 +346,7 @@ function localDrawTarget(playerId, redraw = false) {
   const player = state.players.find((item) => item.id === playerId);
   if (!player || state.targetPool.length === 0) return;
   const drawnColor = shuffle(state.targetPool)[0];
-  const drawnPocket = shuffle(pockets)[0];
+  const drawnPocket = shuffle(pocketsForColor(drawnColor))[0];
   state.targetPool = state.targetPool.filter((color) => color.name !== drawnColor.name);
   player.targetColor = drawnColor;
   player.targetPocket = drawnPocket;
@@ -364,7 +366,7 @@ function revealKnownTarget(player) {
   dom.targetPlayer.textContent = player.name;
   dom.targetBall.style.cssText = colorStyle(player.targetColor);
   dom.targetText.textContent = `${player.targetColor.name} ball`;
-  dom.targetPocketText.textContent = `Pot it in the ${player.targetPocket.label.toLowerCase()} corner pocket.`;
+  dom.targetPocketText.textContent = `Pot it in the ${player.targetPocket.label.toLowerCase()} ${player.targetPocket.group} pocket.`;
   highlightPocket(player.targetPocket);
   dom.privacyOverlay.classList.remove("hidden");
   dom.privacyScreen.classList.add("hidden");
@@ -472,6 +474,11 @@ function formatStatus(status) {
 
 function colorStyle(color) {
   return `background:${color.hex};color:${color.text}`;
+}
+
+function pocketsForColor(color) {
+  const group = color.name === "Blue" ? "middle" : "corner";
+  return pockets.filter((pocket) => pocket.group === group);
 }
 
 function shuffle(list) {
