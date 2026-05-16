@@ -366,22 +366,22 @@ button:disabled {
 
 .snooker-table {
   position: relative;
-  height: clamp(220px, 34vw, 360px);
+  height: clamp(240px, 32vw, 352px);
   overflow: hidden;
-  border: 18px solid #5a3520;
-  border-radius: 30px;
+  border: 20px solid #4a2918;
+  border-radius: 24px;
   background:
-    radial-gradient(circle at 66% 50%, rgba(255, 255, 255, 0.12), transparent 20%),
-    radial-gradient(circle at 22% 52%, rgba(0, 0, 0, 0.14), transparent 30%),
-    repeating-linear-gradient(102deg, rgba(255, 255, 255, 0.022) 0 1px, transparent 1px 7px),
-    repeating-linear-gradient(18deg, rgba(0, 0, 0, 0.022) 0 1px, transparent 1px 9px),
-    linear-gradient(135deg, #1a8059 0%, #106445 48%, #0c5138 100%);
+    radial-gradient(circle at 70% 50%, rgba(255, 255, 255, 0.06), transparent 22%),
+    radial-gradient(circle at 28% 50%, rgba(0, 0, 0, 0.12), transparent 32%),
+    repeating-linear-gradient(96deg, rgba(255, 255, 255, 0.018) 0 1px, transparent 1px 8px),
+    linear-gradient(90deg, #0c5b3d 0%, #11764f 48%, #0c583c 100%);
   background-clip: padding-box;
   box-shadow:
-    inset 0 0 0 5px #7e5230,
-    inset 0 0 0 13px rgba(27, 83, 58, 0.9),
-    inset 0 0 48px rgba(0, 0, 0, 0.32),
-    0 15px 30px rgba(24, 33, 29, 0.16);
+    inset 0 0 0 4px #9b6a3e,
+    inset 0 0 0 11px #1d6a4a,
+    inset 0 0 0 15px #0a3c2c,
+    inset 0 0 42px rgba(0, 0, 0, 0.28),
+    0 18px 34px rgba(24, 33, 29, 0.17);
 }
 
 .snooker-table::before {
@@ -391,60 +391,63 @@ button:disabled {
 .snooker-table::after {
   content: "";
   position: absolute;
-  inset: 9px;
+  inset: 13px;
   z-index: 1;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
   pointer-events: none;
 }
 
 .pocket {
   position: absolute;
   z-index: 4;
-  width: 42px;
-  height: 42px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   background:
-    radial-gradient(circle at 42% 42%, #020403 0 30%, #0a130f 31% 58%, #020403 59% 100%);
+    radial-gradient(circle at 50% 50%, #020403 0 44%, #111711 45% 68%, #020403 69% 100%);
   box-shadow:
-    inset 0 0 0 5px rgba(255, 255, 255, 0.05),
-    0 0 0 7px rgba(65, 35, 22, 0.78),
-    0 3px 10px rgba(0, 0, 0, 0.28);
+    inset 0 0 0 4px rgba(255, 255, 255, 0.04),
+    0 0 0 6px rgba(46, 25, 16, 0.84),
+    0 4px 9px rgba(0, 0, 0, 0.3);
 }
 
 .corner.top-left {
-  top: -24px;
-  left: -24px;
+  top: -21px;
+  left: -21px;
 }
 
 .corner.top-right {
-  top: -24px;
-  right: -24px;
+  top: -21px;
+  right: -21px;
 }
 
 .corner.bottom-left {
-  bottom: -24px;
-  left: -24px;
+  bottom: -21px;
+  left: -21px;
 }
 
 .corner.bottom-right {
-  right: -24px;
-  bottom: -24px;
+  right: -21px;
+  bottom: -21px;
 }
 
 .middle {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 34px;
+  border-radius: 0 0 21px 21px;
   left: 50%;
   transform: translateX(-50%);
 }
 
 .top-mid {
-  top: -26px;
+  top: -23px;
+  border-radius: 0 0 22px 22px;
 }
 
 .bottom-mid {
-  bottom: -26px;
+  bottom: -23px;
+  border-radius: 22px 22px 0 0;
 }
 
 .baulk-line {
@@ -454,7 +457,20 @@ button:disabled {
   left: 24%;
   width: 2px;
   z-index: 2;
-  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.42) 10% 90%, transparent);
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.36) 8% 92%, transparent);
+}
+
+.baulk-d {
+  position: absolute;
+  z-index: 2;
+  left: calc(24% - 56px);
+  top: 50%;
+  width: 112px;
+  height: 112px;
+  border: 2px solid rgba(255, 255, 255, 0.28);
+  border-right: 0;
+  border-radius: 56px 0 0 56px;
+  transform: translateY(-50%);
 }
 
 .spot,
@@ -470,8 +486,8 @@ button:disabled {
 .spot {
   position: absolute;
   z-index: 3;
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
   transform: translate(-50%, -50%);
 }
 
@@ -514,22 +530,23 @@ button:disabled {
 .red-pack {
   position: absolute;
   z-index: 3;
-  right: 21%;
+  left: 66%;
   top: 50%;
   width: 88px;
-  height: 82px;
-  transform: translateY(-50%);
+  height: 76px;
+  transform: translate(-50%, -50%);
 }
 
 .red-pack span {
   position: absolute;
-  left: calc(var(--c) * 17px);
-  top: calc(var(--r) * 15px);
-  width: 17px;
-  height: 17px;
+  left: calc(var(--x) * 1px);
+  top: calc(var(--y) * 1px);
+  width: 16px;
+  height: 16px;
   background:
     radial-gradient(circle at 33% 27%, rgba(255, 255, 255, 0.34), transparent 0 24%),
     #c92231;
+  transform: translate(-50%, -50%);
 }
 
 .game-grid {
