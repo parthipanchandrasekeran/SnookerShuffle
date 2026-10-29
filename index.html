@@ -13,34 +13,45 @@
           <p class="eyebrow">Table-ready digital draw</p>
           <h1>Snooker Shuffle</h1>
         </div>
-        <button class="icon-button" id="resetGame" type="button">Reset</button>
+        <div class="topbar-actions">
+          <button class="icon-button hidden" id="resetGame" type="button">Reset</button>
+          <button class="icon-button hidden" id="exitGame" type="button">Leave</button>
+        </div>
       </section>
 
-      <section class="layout">
+      <section class="panel start-screen hidden" id="startScreen" aria-labelledby="startTitle">
+        <h2 id="startTitle">Play from your phones</h2>
+        <p class="start-copy">One person starts a room. Everyone else joins on their own phone, and secret targets stay on your own screen.</p>
+        <label for="startName">Your name</label>
+        <input id="startName" type="text" maxlength="18" placeholder="e.g. Sam" autocomplete="nickname" required>
+        <button class="primary-action big-action" id="createRoom" type="button">Start a room</button>
+        <p class="divider" id="joinDivider"><span>or join a friend's room</span></p>
+        <label for="roomCodeInput">Room code</label>
+        <div class="input-row">
+          <input id="roomCodeInput" type="text" maxlength="6" placeholder="ABCD" autocomplete="off" autocapitalize="characters" spellcheck="false">
+          <button id="joinRoom" type="button">Join</button>
+        </div>
+        <button class="link-button" id="playLocal" type="button">Play on one shared device instead</button>
+      </section>
+
+      <section class="panel you-card hidden" id="youCard" aria-live="polite"></section>
+
+      <section class="layout hidden" id="gameLayout">
         <aside class="panel setup-panel">
           <div class="panel-head">
             <h2>Game</h2>
-            <p id="modeText">Single-device mode</p>
+            <p id="modeText">One shared device</p>
           </div>
 
-          <div class="mode-tabs" role="tablist" aria-label="Game mode">
-            <button class="mode-tab is-active" id="localMode" type="button">Local</button>
-            <button class="mode-tab" id="roomMode" type="button">Room</button>
+          <div class="room-code hidden" id="roomCodeBox">
+            <span>Room code</span>
+            <strong id="roomCodeText">----</strong>
           </div>
 
-          <div class="room-tools hidden" id="roomTools">
-            <label for="roomName">Your name</label>
-            <input id="roomName" type="text" maxlength="18" placeholder="e.g. Sam" autocomplete="off">
-            <div class="button-grid">
-              <button id="createRoom" type="button">Create room</button>
-              <button class="secondary-action" id="joinRoom" type="button">Join room</button>
-            </div>
-            <label for="roomCodeInput">Room code</label>
-            <input id="roomCodeInput" type="text" maxlength="6" placeholder="ABCD" autocomplete="off">
-            <div class="room-code hidden" id="roomCodeBox">
-              <span>Room code</span>
-              <strong id="roomCodeText">----</strong>
-            </div>
+          <div class="room-invite hidden" id="roomInvite">
+            <div class="room-qr" id="roomQr" role="img" aria-label="QR code to join this room"></div>
+            <p>Friends scan this or open the link to join.</p>
+            <button class="secondary-action" id="shareRoom" type="button">Share invite link</button>
           </div>
 
           <form class="add-player" id="playerForm">
@@ -59,18 +70,20 @@
             <p>Players confirm reds at the table. No red counter.</p>
           </div>
 
-          <div class="rule-controls">
-            <label class="check-row">
-              <input id="autoReds" type="checkbox" checked>
-              <span>Auto reds by player count</span>
-            </label>
-            <label for="manualReds">Manual reds</label>
-            <input id="manualReds" type="number" min="1" max="5" value="2">
-          </div>
+          <div id="hostSetup">
+            <div class="rule-controls">
+              <label class="check-row">
+                <input id="autoReds" type="checkbox" checked>
+                <span>Auto reds by player count</span>
+              </label>
+              <label for="manualReds">Manual reds</label>
+              <input id="manualReds" type="number" min="1" max="5" value="2">
+            </div>
 
-          <div class="action-stack">
-            <button class="secondary-action" id="samplePlayers" type="button">Load sample players</button>
-            <button class="primary-action" id="drawOrder" type="button" disabled>Draw start order</button>
+            <div class="action-stack">
+              <button class="secondary-action" id="samplePlayers" type="button">Load sample players</button>
+              <button class="primary-action" id="drawOrder" type="button" disabled>Draw start order</button>
+            </div>
           </div>
         </aside>
 
@@ -137,7 +150,7 @@
         <div class="privacy-screen" id="privacyScreen">
           <p class="eyebrow">Private draw</p>
           <h2 id="privacyTitle">Hand the device to the player</h2>
-          <p>Only this player should tap reveal. Other players should look away.</p>
+          <p id="privacyCopy">Only this player should tap reveal. Other players should look away.</p>
           <button class="primary-action" id="revealTarget" type="button">Reveal target</button>
         </div>
 
@@ -168,6 +181,7 @@
       </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js" integrity="sha512-ZDSPMa/JM1D+7kdg2x3BsruQ6T/JpJo3jWDWkCZsP+5yVyp1KfESqLI+7RqB5k24F7p2cV7i2YHh/890y6P6Sw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="app.js"></script>
   </body>
 </html>

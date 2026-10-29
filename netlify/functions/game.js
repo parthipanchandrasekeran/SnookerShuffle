@@ -38,15 +38,16 @@ export default async function handler(request) {
     if (!roomCode) return response({ error: "Room code is required." }, 400);
 
     const room = await getRoom(roomCode);
-    if (!room) return response({ error: "Room not found." }, 404);
+    if (!room) return response({ error: "Room not found. Check the code." }, 404);
 
     if (request.method === "GET" || action === "state") {
-      return response({ room: sanitizeRoom(room, body.playerToken || url.searchParams.get("playerToken")) });
+      return response({ room: sanitizeRoom(room, body) });
     }
 
     const result = await runAction(room, action, body);
     await saveRoom(result.room);
-    return response({ room: sanitizeRoom(result.room, body.playerToken || body.hostToken), ...result.extra });
+    const viewer = { hostToken: body.hostToken, playerToken: body.playerToken || result.extra.playerToken };
+    return response({ room: sanitizeRoom(result.room, viewer), ...result.extra });
   } catch (error) {
     return response({ error: error.message || "Something went wrong." }, 500);
   }
@@ -55,7 +56,8 @@ export default async function handler(request) {
 async function createRoom(body) {
   const roomCode = await createUniqueRoomCode();
   const hostToken = token();
-  const players = normalizeNames(body.players || [body.hostName || "Host"]).map(createPlayer);
+  const hostPlayer = createPlayer(normalizeName(body.hostName || "") || "Host");
+  const players = [hostPlayer];
   const room = {
     roomCode,
     hostToken,
@@ -74,32 +76,36 @@ async function createRoom(body) {
     updatedAt: new Date().toISOString()
   };
   await saveRoom(room);
-  return { room: sanitizeRoom(room, hostToken), hostToken };
+  return {
+    room: sanitizeRoom(room, { hostToken, playerToken: hostPlayer.token }),
+    hostToken,
+    playerToken: hostPlayer.token,
+    playerId: hostPlayer.id
+  };
 }
 
 async function runAction(room, action, body) {
   if (action === "join") {
-    assertSetup(room);
-    const player = createPlayer(normalizeName(body.name || "Player"));
+    if (room.phase !== "setup") throw new Error("This game has already started. Ask the host to reset it.");
     if (room.players.length >= 6) throw new Error("Room is full.");
+    const player = createPlayer(normalizeName(body.name || "") || "Player");
     room.players.push(player);
     updateReds(room);
     log(room, `${player.name} joined.`);
     return { room, extra: { playerToken: player.token, playerId: player.id } };
   }
 
-  const actor = findActor(room, body);
-
-  if (action === "addPlayer") {
-    assertHost(actor);
-    assertSetup(room);
-    if (room.players.length >= 6) throw new Error("Room is full.");
-    const player = createPlayer(normalizeName(body.name || "Player"));
-    room.players.push(player);
-    updateReds(room);
-    log(room, `${player.name} added.`);
-    return { room, extra: { playerToken: player.token, playerId: player.id } };
+  if (action === "leave") {
+    const player = findPlayerByToken(room, body.playerToken);
+    if (player && room.phase === "setup") {
+      room.players = room.players.filter((item) => item !== player);
+      updateReds(room);
+      log(room, `${player.name} left.`);
+    }
+    return { room, extra: {} };
   }
+
+  const actor = findActor(room, body);
 
   if (action === "removePlayer") {
     assertHost(actor);
@@ -141,9 +147,9 @@ async function runAction(room, action, body) {
 
   if (action === "drawTarget") {
     assertPlaying(room);
-    const player = findPlayerByToken(room, body.playerToken) || findPlayer(room, body.playerId);
-    if (!player) throw new Error("Player not found.");
-    if (player.targetColor) throw new Error("This player already has a target.");
+    const player = findPlayerByToken(room, body.playerToken);
+    if (!player) throw new Error("Only you can draw your own target.");
+    if (player.targetColor) throw new Error("You already have a target.");
     if (room.targetPool.length === 0) throw new Error("No target colors left.");
     const drawnColor = shuffle(room.targetPool)[0];
     const drawnPocket = shuffle(pocketsForColor(drawnColor))[0];
@@ -172,8 +178,9 @@ async function runAction(room, action, body) {
 
   if (action === "claimWin") {
     assertPlaying(room);
-    const player = findPlayerByToken(room, body.playerToken) || findPlayer(room, body.playerId);
-    if (!player?.targetColor || !player?.targetPocket) throw new Error("Player has no target.");
+    const player = findPlayerByToken(room, body.playerToken);
+    if (!player?.targetColor || !player?.targetPocket) throw new Error("Only a player with a target can claim a win.");
+    if (player.status === "out") throw new Error("You are out of this game.");
     const validColor = body.colorName === player.targetColor.name;
     const validPocket = body.pocketId === player.targetPocket.id;
     if (!validColor || !validPocket) throw new Error("Claim does not match the private target.");
@@ -205,8 +212,8 @@ async function runAction(room, action, body) {
   throw new Error("Unsupported action.");
 }
 
-function sanitizeRoom(room, viewerToken) {
-  const isHost = viewerToken === room.hostToken;
+function sanitizeRoom(room, viewer = {}) {
+  const isHost = Boolean(viewer.hostToken) && viewer.hostToken === room.hostToken;
   return {
     roomCode: room.roomCode,
     phase: room.phase,
@@ -215,7 +222,7 @@ function sanitizeRoom(room, viewerToken) {
     winner: room.winner,
     isHost,
     players: room.players.map((player) => {
-      const canSeeSecret = viewerToken === player.token || room.phase === "complete";
+      const canSeeSecret = (Boolean(viewer.playerToken) && viewer.playerToken === player.token) || room.phase === "complete";
       return {
         id: player.id,
         name: player.name,
@@ -282,10 +289,6 @@ function findPlayerByToken(room, playerToken) {
   return room.players.find((player) => player.token === playerToken);
 }
 
-function findPlayer(room, playerId) {
-  return room.players.find((player) => player.id === playerId);
-}
-
 function assertHost(actor) {
   if (actor.role !== "host") throw new Error("Host action required.");
 }
@@ -307,10 +310,6 @@ function redsNeeded(count) {
   if (count === 3 || count === 4) return 2;
   if (count >= 5) return 1;
   return 0;
-}
-
-function normalizeNames(names) {
-  return names.map(normalizeName).filter(Boolean).slice(0, 6);
 }
 
 function normalizeName(name) {

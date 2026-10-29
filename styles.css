@@ -144,32 +144,83 @@ label {
   gap: 8px;
 }
 
-.button-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+.topbar-actions {
+  display: flex;
   gap: 8px;
-  margin: 10px 0 12px;
 }
 
-.mode-tabs {
+.start-screen {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-  margin-bottom: 16px;
+  gap: 10px;
+  max-width: 460px;
+  margin: 8px auto 0;
+  padding: 22px;
 }
 
-.mode-tab {
-  color: var(--ink);
-  background: #eef1ec;
-  border: 1px solid var(--line);
+.start-screen label {
+  margin: 6px 0 0;
 }
 
-.mode-tab.is-active {
-  color: #ffffff;
-  background: var(--felt-dark);
+.start-copy {
+  margin-bottom: 4px;
+  color: var(--muted);
+  line-height: 1.45;
 }
 
-.room-tools,
+.big-action {
+  min-height: 52px;
+  font-size: 16px;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.link-button {
+  justify-self: center;
+  min-height: 36px;
+  margin-top: 6px;
+  color: var(--muted);
+  background: transparent;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.you-card {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 18px;
+  padding: 18px;
+  border-left: 6px solid var(--accent);
+}
+
+.you-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.you-text {
+  margin-bottom: 0;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
 .rule-controls {
   display: grid;
   gap: 8px;
@@ -180,7 +231,37 @@ label {
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 12px;
+  margin-bottom: 12px;
   background: #fbfcfa;
+}
+
+.room-invite {
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+  margin-bottom: 4px;
+  text-align: center;
+}
+
+.room-invite p {
+  margin-bottom: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.room-qr {
+  width: 184px;
+  aspect-ratio: 1;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 6px;
+  background: #ffffff;
+}
+
+.room-qr svg {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .room-code span {
@@ -902,10 +983,16 @@ button:disabled {
     grid-template-columns: 1fr;
   }
 
-  .button-grid,
-  .color-control-grid,
-  .mode-tabs {
-    grid-template-columns: 1fr;
+  .color-control-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .start-screen {
+    padding: 18px;
+  }
+
+  .in-room .snooker-table {
+    display: none;
   }
 
   .input-row button {
