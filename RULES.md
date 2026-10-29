@@ -100,6 +100,8 @@ Possible winning pockets:
 
 Middle pockets only count as a winning pot for blue unless house rules allow otherwise.
 
+No two players still in the game share a winning pocket. There are only 4 corners for the 5 non-blue colours, so if 5 non-blue targets are in play at once, the fifth shares the least-used corner. A knocked-out player's pocket becomes free again.
+
 ## Winning
 
 A qualified player wins when they pot their own secret target color into their assigned winning pocket.

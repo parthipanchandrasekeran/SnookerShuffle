@@ -442,7 +442,7 @@ function localDrawTarget(playerId) {
   const player = state.players.find((item) => item.id === playerId);
   if (!player || state.targetPool.length === 0) return;
   const drawnColor = shuffle(state.targetPool)[0];
-  const drawnPocket = shuffle(pocketsForColor(drawnColor))[0];
+  const drawnPocket = pickPocket(drawnColor, state.players);
   state.targetPool = state.targetPool.filter((color) => color.name !== drawnColor.name);
   player.targetColor = drawnColor;
   player.targetPocket = drawnPocket;
@@ -590,6 +590,15 @@ function pocketName(pocket) {
 function pocketsForColor(color) {
   const group = color.name === "Blue" ? "middle" : "corner";
   return pockets.filter((pocket) => pocket.group === group);
+}
+
+// Only 4 corners exist for 5 non-blue colours, so share the least-used pocket once corners run out.
+function pickPocket(color, players) {
+  const taken = players.filter((player) => player.targetPocket && player.status !== "out").map((player) => player.targetPocket.id);
+  const uses = (pocket) => taken.filter((id) => id === pocket.id).length;
+  const options = pocketsForColor(color);
+  const fewest = Math.min(...options.map(uses));
+  return shuffle(options.filter((pocket) => uses(pocket) === fewest))[0];
 }
 
 function shuffle(list) {

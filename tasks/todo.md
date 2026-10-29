@@ -35,4 +35,4 @@ Extra fixes found during testing:
 
 Security checks on the draft: a friend can't see the host's target, can't claim for another player, can't mark colours potted, can't draw twice; the public GET shows no targets.
 
-Not done (from PHASES.md Phase 3): two players can still be given the same pocket.
+Follow-up (2026-10-28, deploy 6ae2acd77cf899e9c33ec9c2): winning pockets are now unique among players still in the game. Only 4 corners exist for 5 non-blue colours, so a fifth active non-blue target shares the least-used corner (rule written into RULES.md). Simulated 20,000 games against the server code: 0 violations (the previous code failed the same test even in 2-player games).

@@ -152,7 +152,7 @@ async function runAction(room, action, body) {
     if (player.targetColor) throw new Error("You already have a target.");
     if (room.targetPool.length === 0) throw new Error("No target colors left.");
     const drawnColor = shuffle(room.targetPool)[0];
-    const drawnPocket = shuffle(pocketsForColor(drawnColor))[0];
+    const drawnPocket = pickPocket(drawnColor, room.players);
     room.targetPool = room.targetPool.filter((color) => color.name !== drawnColor.name);
     player.targetColor = drawnColor;
     player.targetPocket = drawnPocket;
@@ -332,6 +332,15 @@ function shuffle(list) {
 function pocketsForColor(color) {
   const group = color.name === "Blue" ? "middle" : "corner";
   return pockets.filter((pocket) => pocket.group === group);
+}
+
+// Only 4 corners exist for 5 non-blue colours, so share the least-used pocket once corners run out.
+function pickPocket(color, players) {
+  const taken = players.filter((player) => player.targetPocket && player.status !== "out").map((player) => player.targetPocket.id);
+  const uses = (pocket) => taken.filter((id) => id === pocket.id).length;
+  const options = pocketsForColor(color);
+  const fewest = Math.min(...options.map(uses));
+  return shuffle(options.filter((pocket) => uses(pocket) === fewest))[0];
 }
 
 function token(length = 16) {
